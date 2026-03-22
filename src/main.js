@@ -4,6 +4,8 @@ import {
   clearGallery,
   showLoader,
   hideLoader,
+  showLoadMoreButton,
+  hideLoadMoreButton,
 } from './js/render-functions.js';
 
 import iziToast from 'izitoast';
@@ -15,6 +17,8 @@ const loadBtn = document.querySelector('.load-btn');
 
 let currentPage = 1;
 let currentQuery = '';
+
+hideLoadMoreButton();
 
 form.addEventListener('submit', async e => {
   e.preventDefault();
@@ -31,6 +35,7 @@ form.addEventListener('submit', async e => {
 
   currentQuery = query;
   currentPage = 1;
+  hideLoadMoreButton();
   clearGallery();
   showLoader();
 
@@ -55,19 +60,17 @@ form.addEventListener('submit', async e => {
     });
   } finally {
     hideLoader();
-    form.reset();
   }
 });
 
 loadBtn.addEventListener('click', async () => {
   currentPage += 1;
-  loadBtn.style.display = 'none';
+  hideLoadMoreButton();
   showLoader();
 
   try {
     const data = await getImagesByQuery(currentQuery, currentPage);
     createGallery(data.hits);
-
     checkButtonStatus(data.totalHits);
 
     const galleryItem = document.querySelector('.li-item');
@@ -85,7 +88,7 @@ loadBtn.addEventListener('click', async () => {
       message: `Something went wrong: ${error.message}`,
       position: 'topRight',
     });
-    loadBtn.style.display = 'block';
+    showLoadMoreButton();
   } finally {
     hideLoader();
   }
@@ -95,13 +98,13 @@ function checkButtonStatus(totalHits) {
   const totalPages = Math.ceil(totalHits / 15);
 
   if (currentPage >= totalPages) {
-    loadBtn.style.display = 'none';
-    iziToast.info({
-      title: 'Warning',
-      message: "We're sorry, but you've reached the end of search results.",
-      position: 'topRight',
-    });
+    hideLoadMoreButton();
+    if (totalPages > 0) {
+      iziToast.info({
+        message: "We're sorry, but you've reached the end of search results.",
+      });
+    }
   } else {
-    loadBtn.style.display = 'block';
+    showLoadMoreButton();
   }
 }

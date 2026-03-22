@@ -69,12 +69,23 @@ loadBtn.addEventListener('click', async () => {
     createGallery(data.hits);
 
     checkButtonStatus(data.totalHits);
+
+    const galleryItem = document.querySelector('.li-item');
+
+    if (galleryItem) {
+      const { height: cardHeight } = galleryItem.getBoundingClientRect();
+      window.scrollBy({
+        top: cardHeight * 2,
+        behavior: 'smooth',
+      });
+    }
   } catch (error) {
     iziToast.error({
       title: 'Error',
       message: `Something went wrong: ${error.message}`,
       position: 'topRight',
     });
+    loadBtn.style.display = 'block';
   } finally {
     hideLoader();
   }

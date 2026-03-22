@@ -1,8 +1,6 @@
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
-// import 'css-loader/dist/loader.css';
-
 let lightbox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
@@ -41,7 +39,7 @@ function createImg(img) {
 
 export function createGallery(images) {
   const markup = images.map(img => createImg(img)).join('');
-  gallery.insertAdjacentElement = markup;
+  gallery.insertAdjacentHTML('beforeend', markup);
 
   lightbox.refresh();
 }

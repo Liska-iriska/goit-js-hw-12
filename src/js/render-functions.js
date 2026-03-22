@@ -40,7 +40,7 @@ function createImg(img) {
 
 export function createGallery(images) {
   const markup = images.map(img => createImg(img)).join('');
-  gallery.innerHTML = markup;
+  gallery.insertAdjacentHTML('beforeend', markup);
 
   lightbox.refresh();
 }
